@@ -1,0 +1,17 @@
+{
+  "name": "nodereddemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node-red --settings ./.node-red/settings.js --userDir ./.node-red",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leonardo Croda",
+  "license": "ISC",
+  "dependencies": {
+    "node-red": "^1.0.1",
+    "node-red-admin": "^0.1.5",
+    "node-red-contrib-mongodb3": "^2.0.1"
+  }
+}

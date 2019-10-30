@@ -1,0 +1,376 @@
+[
+    {
+        "id": "a89e66c6.93e568",
+        "type": "tab",
+        "label": "classificar-tweets",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a0a7be1e.f61f7",
+        "type": "mongodb3",
+        "z": "",
+        "uri": "mongodb://classificar-tweets-shard-00-00-srtwi.mongodb.net:27017/classificar_tweets",
+        "name": "MONGODB",
+        "options": "{\"ssl\" : true, \"replicaSet\" : \"classificar-tweets-shard-0\", \"authSource\" : \"admin\", \"retryWrites\" : true, \"w\" : \"majority\"}",
+        "parallelism": "-1"
+    },
+    {
+        "id": "ee283de8.d379c",
+        "type": "http response",
+        "z": "a89e66c6.93e568",
+        "name": "Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 840,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "e435c994.80a308",
+        "type": "template",
+        "z": "a89e66c6.93e568",
+        "name": "sem url",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"\n        integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n    <link rel=\"icon\" href=\"http://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png\"\n        type=\"image/x-icon\">\n   <link href=\"https://fonts.googleapis.com/css?family=Roboto|Ubuntu&display=swap\" rel=\"stylesheet\"> \n\n    <style>\n      body {\n          background-color: #15202b;\n          color: #ffffff;\n          font-style: normal;\n          font-family: 'Roboto', sans-serif;\n        }\n\n        .btn {\n          margin-top: 30px;\n          border-radius: 100px;\n          padding: 15px;\n          font-weight: bold;\n          background-color: #1a91da;\n        }\n        \n        h1 {\n          margin-left: 10px;\n          margin-top: 1rem;\n          font-family: 'Ubuntu', sans-serif;\n\n        }\n        \n        h2 {\n          font-size: 1.4em;\n          font-weight: bold;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        \n        label {\n          padding-left: 10px;\n        }\n        \n        .myCard {\n          border-radius: 5px;\n          color: black;\n          background-color: #15202b;\n          margin: auto;\n          border-style:solid;\n          border-color:#38444D;\n          color:white;\n          font-size:1.1em;\n          border-width:0.3px;\n        }\n        \n        .form-check:hover {\n          color: #1a91da;\n        }\n        \n        input:checked+label {\n          color: #1a91da;\n        }\n        \n        .invisivel {\n          display: none;\n        }\n        \n        .logo {\n          margin: 10px 0 10px 0;\n          display: flex;\n          justify-content: center;\n          align-items: center;\n        }\n        \n        .logo img {\n          width: 50px;\n        }\n        \n        #assunto {\n          margin-top: 10px;\n        }\n        \n        #sentimento {\n          margin-top: 10px;\n        }\n        .user{\n          margin-top: 0px;\n          color:#FFFFFF;\n          font-weight:bold;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        .screenName{\n            color:#8899A6;\n            font-weight:normal;\n            font-family: 'Ubuntu', sans-serif;\n        }\n    \n    </style>\n    <title>Classificar Tweets</title>\n</head>\n\n<body>\n    <div class=\"container tela\">\n        <div class=\"row\">\n            <div class=\"col-xs-10 col-sm-12 col-md-12 col-lg-12 \" style=\"display:inline-block\">\n                <div class=\"logo\">\n                    <img src=\"http://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png\"\n                        alt=\"\">\n                    <h1>Tweet</h1>\n                </div>\n                <div class=\"row \">\n                    <div class=\"card myCard col-xs-11 col-sm-11 col-md-1 col-lg-5\">\n                        <div class=\"card-body\">\n                            {{#payload}}\n                            <p class=\"user\">{{user.name}} - <span class=\"screenName\">@{{user.screen_name}}</span></p>\n                            <p>{{full_text}}</p>\n                            {{/payload}}\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n            <form class=\"form-group\" action=\"/send\" method=\"post\">\n                <div class=\"row\">\n                    <div class=\"col-xs-0 col-sm-1 col-md-1 col-lg-2\"></div>\n                    <div class=\"col-xs-6 col-sm-6 col-md-4 col-lg-4\" id=\"sentimento\">\n                        <h2>Você considera o tweet:</h2>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"p\" type=\"radio\" name=\"sentimento\" value=\"1\" checked>\n                            <label class=\"form-check-label\" for=\"p\">\n                                Positivo\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"n\" type=\"radio\" name=\"sentimento\" value=\"0\">\n                            <label class=\"form-check-label\" for=\"n\">\n                                Negativo\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"e\" type=\"radio\" name=\"sentimento\" value=\"2\">\n                            <label class=\"form-check-label\" for=\"e\">\n                                Neutro\n                            </label>\n                        </div>\n                    </div>\n                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\" id=\"assunto\">\n                        <h2>Esse tweet é sobre o que?</h2>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"economia\" name=\"pilares\" value=\"1\">\n                            <label for=\"economia\">Economia e inovação</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"pessoas\" name=\"pilares\" value=\"2\">\n                            <label for=\"pessoas\">Relações sociais</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"governo\" name=\"pilares\" value=\"3\">\n                            <label for=\"governo\">Governança e administração pública</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"mobilidade\" name=\"pilares\" value=\"4\">\n                            <label for=\"mobilidade\">Mobilidade, transporte e acessibilidade\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"ambiente\" name=\"pilares\" value=\"5\">\n                            <label for=\"ambiente\">Meio ambiente</label>\n                        </div>\n                        <div class=\"form-check\">\n                           <input type=\"checkbox\" class=\"form-check-input\" id=\"vida\" name=\"pilares\" value=\"6\">\n                            <label for=\"vida\">Saúde, segurança, educação, cultura e qualidade de vida</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"outro\" name=\"pilares\" value=\"7\">\n                            <label for=\"outro\">Outro</label>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"row\">\n                    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n                        <input class=\"invisivel\" type=\"radio\" name=\"id\" value={{tweet_id}} checked>\n                        <div class=\"text-center\">\n                            <button class=\"btn btn-primary \" type=\"submit\">Próximo Tweet</button>\n                        </div>\n                    </div>\n                </div>\n            </form>\n        </div>\n    </div>\n</body>\n\n</html>",
+        "output": "str",
+        "x": 660,
+        "y": 520,
+        "wires": [
+            [
+                "ee283de8.d379c"
+            ]
+        ]
+    },
+    {
+        "id": "46f24b19.9cffb4",
+        "type": "http in",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "url": "/classificar-tweets",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 160,
+        "wires": [
+            [
+                "63149962.1a9618"
+            ]
+        ]
+    },
+    {
+        "id": "274805bf.c1a522",
+        "type": "mongodb3 in",
+        "z": "a89e66c6.93e568",
+        "service": "_ext_",
+        "configNode": "a0a7be1e.f61f7",
+        "name": "aggregate.forEach([{$sample:{size:1}}])",
+        "collection": "tweets",
+        "operation": "",
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "fac35e80.c0437"
+            ]
+        ]
+    },
+    {
+        "id": "63149962.1a9618",
+        "type": "function",
+        "z": "a89e66c6.93e568",
+        "name": "Monta Consulta",
+        "func": "msg.operation = 'aggregate.forEach';\nmsg.payload= [[{$sample:{size:1}}]];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "274805bf.c1a522"
+            ]
+        ]
+    },
+    {
+        "id": "1c061e81.dc75c1",
+        "type": "function",
+        "z": "a89e66c6.93e568",
+        "name": "tweet_id e tweet_full_text",
+        "func": "msg.tweet_id = msg.payload.id;\nmsg.tweet_full_text = msg.payload.full_text;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 520,
+        "wires": [
+            [
+                "e435c994.80a308"
+            ]
+        ]
+    },
+    {
+        "id": "fd4549b4.a1e7a8",
+        "type": "http in",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "url": "/send",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 990,
+        "y": 420,
+        "wires": [
+            [
+                "8ab12b1a.9c6a6"
+            ]
+        ]
+    },
+    {
+        "id": "9da19084.09e4b8",
+        "type": "function",
+        "z": "a89e66c6.93e568",
+        "name": "Monta udate",
+        "func": "console.log (msg.payload.id);\nmsg.operation = 'updateOne';\nmsg.payload = [{id_str: msg.payload.id},{$set:{sentimento:parseInt(msg.payload.sentimento),pilares:msg.payload.pilares}}];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1100,
+        "y": 120,
+        "wires": [
+            [
+                "46eb9bdf.c05de4"
+            ]
+        ]
+    },
+    {
+        "id": "8ab12b1a.9c6a6",
+        "type": "switch",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "property": "payload.sentimento",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1080,
+        "y": 320,
+        "wires": [
+            [
+                "acb1c38f.757958"
+            ],
+            [
+                "aabf80fc.d54688"
+            ]
+        ]
+    },
+    {
+        "id": "acb1c38f.757958",
+        "type": "switch",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "property": "payload.pilares",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1080,
+        "y": 220,
+        "wires": [
+            [
+                "9da19084.09e4b8"
+            ],
+            [
+                "aabf80fc.d54688"
+            ]
+        ]
+    },
+    {
+        "id": "aabf80fc.d54688",
+        "type": "function",
+        "z": "a89e66c6.93e568",
+        "name": "Erro",
+        "func": "console.log(\"Erro, o caboclo não preencheu algum campo...\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1320,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "46eb9bdf.c05de4",
+        "type": "mongodb3 in",
+        "z": "a89e66c6.93e568",
+        "service": "_ext_",
+        "configNode": "a0a7be1e.f61f7",
+        "name": "update",
+        "collection": "tweets",
+        "operation": "",
+        "x": 680,
+        "y": 40,
+        "wires": [
+            [
+                "63149962.1a9618"
+            ]
+        ]
+    },
+    {
+        "id": "fac35e80.c0437",
+        "type": "switch",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "property": "payload.sentimento",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 240,
+        "wires": [
+            [
+                "63149962.1a9618"
+            ],
+            [
+                "aa2f90a8.d9f25"
+            ]
+        ]
+    },
+    {
+        "id": "164caf38.ad2629",
+        "type": "template",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"\n        integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n    <link rel=\"icon\" href=\"http://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png\"\n        type=\"image/x-icon\">\n    <link href=\"https://fonts.googleapis.com/css?family=Nunito:400,900&display=swap\" rel=\"stylesheet\">\n    <link href=\"https://fonts.googleapis.com/css?family=Open+Sans&display=swap\" rel=\"stylesheet\">\n    <link rel=\"stylesheet\" href=\"styles.css\">\n    <title>Classificar Tweets</title>\n    <style>\n        body {\n          background-color: #15202b;\n          color: #ffffff;\n          font-style: normal;\n          font-family: 'Roboto', sans-serif;\n        }\n        \n        .btn {\n            margin-top: 30px;\n            border-radius: 100px;\n            padding: 15px;\n            font-weight: bold;\n            background-color: #1a91da;\n            margin-bottom:30px;\n        }\n        .card-body{\n            padding-left:1px;\n            padding-top:10px;\n        }\n        .myCard {\n          border-radius: 5px;\n          color: black;\n          background-color: #15202b;\n          margin: auto;\n          border-style:solid;\n          border-color:#38444D;\n          border-width:0.3px;\n          color:white;\n          font-size:1.1em;\n        }\n        \n        .user{\n          margin-top: 0px;\n          color:#FFFFFF;\n          font-weight:bold;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        .screenName{\n          color:#8899A6;\n          font-weight:normal;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        \n        .foto{\n          width: 50px;\n          border-radius: 100px;\n        }\n        .tweet{\n          margin-top: -10px;\n          margin-left: 3.2em;\n        }\n        .user:hover{\n          color:white;\n          text-decoration: none;\n        }\n        .screenName:hover{\n          color: #8899A6;\n        }\n        .row{\n        overflow-x: hidden;\n        width:100vw;\n        }\n\n    </style>\n</head>\n\n<body>\n    <div class=\"row\">\n        <div class=\"col-xs-10 col-sm-12 col-md-12 col-lg-12 \" style=\"display:inline-block\">\n            <div class=\"row \">\n                <div class=\"card myCard col-xs-11 col-sm-11 col-md-1 col-lg-5\">\n                    <div class=\"card-body\">\n                        <img class=\"foto perfil\"\n                            src=\"https://pbs.twimg.com/media/D93Z94mXYAAHdmW?format=jpg&name=medium\">\n                        <div class=\"nomes\" style=\"display:inline-block\">\n                            <a href=\"https://twitter.com/leonardocroda_\" class=\"user\">leo croda</a>\n                            <a href=\"https://twitter.com/leonardocroda_\" class=\"screenName\"> @leonardocroda_</a>\n                        </div>\n                        <div class=\"tweet\">\n\n                            <p>Você está prestes a participar do processo de treinamento de um algoritmo de aprendizado\n                                de máquina!\n                            </p>\n                            <p class=\"\">Esse site foi desenvolvido para criar um conjunto de dados sobre cidades\n                                inteligentes.</p>\n                            <p>O DataSet gerado será utilizado para treinar um modelo de aprendizado de máquina que ao fim do processo deverá ser capaz de literalmente saber o assunto de um tweet e se ele está falando bem ou mal sobre esse assunto.</p>\n                            <p class=\"\">Classifique quantos tweets você puder... Toda ajuda é bem vinda!</p>\n                            <p>Obrigado!</p>\n                            <p>Ah, se tiver qualquer dúvida sobre o projeto me da um toque no twitter!</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"text-center\">\n        <a class=\"btn btn-primary \" href=\"classificar-tweets\">Começar!</a>\n    </div>\n</body>\n\n</html>\n\n",
+        "output": "str",
+        "x": 360,
+        "y": 80,
+        "wires": [
+            [
+                "463a93a4.4b974c"
+            ]
+        ]
+    },
+    {
+        "id": "8660e14a.505f68",
+        "type": "http in",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "url": "/home",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "164caf38.ad2629"
+            ]
+        ]
+    },
+    {
+        "id": "463a93a4.4b974c",
+        "type": "http response",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 480,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e0b757f1.28266",
+        "type": "function",
+        "z": "a89e66c6.93e568",
+        "name": "tweet_id  tweet_full_text tweet_url",
+        "func": "msg.tweet_id = msg.payload.id;\nmsg.tweet_full_text = msg.payload.full_text;\nmsg.tweet_url = msg.payload.entities.urls[0].url;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 560,
+        "wires": [
+            [
+                "953ce932.190c98"
+            ]
+        ]
+    },
+    {
+        "id": "953ce932.190c98",
+        "type": "template",
+        "z": "a89e66c6.93e568",
+        "name": "com url",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"\n        integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n    <link rel=\"icon\" href=\"http://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png\"\n        type=\"image/x-icon\">\n   <link href=\"https://fonts.googleapis.com/css?family=Roboto|Ubuntu&display=swap\" rel=\"stylesheet\"> \n\n    <style>\n        body {\n          background-color: #15202b;\n          color: #ffffff;\n          font-style: normal;\n          font-family: 'Roboto', sans-serif;\n        }\n        a{\n            color: #ffffff;\n            text-decoration:none;\n        }\n        a:hover{\n            color: #ffffff;\n            text-decoration:none;\n        }\n        .btn {\n          margin-top: 30px;\n          border-radius: 100px;\n          padding: 15px;\n          font-weight: bold;\n          background-color: #1a91da;\n        }\n        \n        h1 {\n          margin-left: 10px;\n          margin-top: 1rem;\n          font-family: 'Ubuntu', sans-serif;\n\n        }\n        \n        h2 {\n          font-size: 1.4em;\n          font-weight: bold;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        \n        label {\n          padding-left: 10px;\n        }\n        \n        .myCard {\n          border-radius: 5px;\n          color: black;\n          background-color: #15202b;\n          margin: auto;\n          border-style:solid;\n          border-color:#38444D;\n          color:white;\n          font-size:1.1em;\n          border-width:0.3px;\n        }\n        \n        .form-check:hover {\n          color: #1a91da;\n        }\n        \n        input:checked+label {\n          color: #1a91da;\n        }\n        \n        .invisivel {\n          display: none;\n        }\n        \n        .logo {\n          margin: 10px 0 10px 0;\n          display: flex;\n          justify-content: center;\n          align-items: center;\n        }\n        \n        .logo img {\n          width: 50px;\n        }\n        \n        #assunto {\n          margin-top: 10px;\n        }\n        \n        #sentimento {\n          margin-top: 10px;\n        }\n        .user{\n          margin-top: 0px;\n          color:#FFFFFF;\n          font-weight:bold;\n          font-family: 'Ubuntu', sans-serif;\n        }\n        .screenName{\n            color:#8899A6;\n            font-weight:normal;\n            font-family: 'Ubuntu', sans-serif;\n        }\n    </style>\n    <title>Classificar Tweets</title>\n</head>\n\n<body>\n    <div class=\"container tela\">\n        <div class=\"row\">\n            <div class=\"col-xs-10 col-sm-12 col-md-12 col-lg-12 \" style=\"display:inline-block\">\n                <div class=\"logo\">\n                    <img src=\"http://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png\"\n                        alt=\"\">\n                    <h1>Tweet</h1>\n                </div>\n                <div class=\"row \">\n                    <div class=\"card myCard col-xs-11 col-sm-11 col-md-1 col-lg-5\">\n                        <div class=\"card-body\">\n                            {{#payload}}\n                            <p class=\"user\">{{user.name}} - <span class=\"screenName\">@{{user.screen_name}}</span></p>\n                            <a href=\"{{tweet_url}}\" target=\"_blank\">{{full_text}}</a>\n                            {{/payload}}\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n            <form class=\"form-group\" action=\"/send\" method=\"post\">\n                <div class=\"row\">\n                    <div class=\"col-xs-0 col-sm-1 col-md-1 col-lg-2\"></div>\n                    <div class=\"col-xs-6 col-sm-6 col-md-4 col-lg-4\" id=\"sentimento\">\n                        <h2>Você considera o tweet:</h2>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"p\" type=\"radio\" name=\"sentimento\" value=\"1\" checked>\n                            <label class=\"form-check-label\" for=\"p\">\n                                Positivo\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"n\" type=\"radio\" name=\"sentimento\" value=\"0\">\n                            <label class=\"form-check-label\" for=\"n\">\n                                Negativo\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input class=\"form-check-input\" id=\"e\" type=\"radio\" name=\"sentimento\" value=\"2\">\n                            <label class=\"form-check-label\" for=\"e\">\n                                Neutro\n                            </label>\n                        </div>\n                    </div>\n                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\" id=\"assunto\">\n                        <h2>Esse tweet é sobre o que?</h2>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"economia\" name=\"pilares\" value=\"1\">\n                            <label for=\"economia\">Economia e inovação</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"pessoas\" name=\"pilares\" value=\"2\">\n                            <label for=\"pessoas\">Relações sociais</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"governo\" name=\"pilares\" value=\"3\">\n                            <label for=\"governo\">Governança e administração pública</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"mobilidade\" name=\"pilares\" value=\"4\">\n                            <label for=\"mobilidade\">Mobilidade, transporte e acessibilidade\n                            </label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"ambiente\" name=\"pilares\" value=\"5\">\n                            <label for=\"ambiente\">Meio ambiente</label>\n                        </div>\n                        <div class=\"form-check\">\n                           <input type=\"checkbox\" class=\"form-check-input\" id=\"vida\" name=\"pilares\" value=\"6\">\n                            <label for=\"vida\">Saúde, segurança, educação, cultura e qualidade de vida</label>\n                        </div>\n                        <div class=\"form-check\">\n                            <input type=\"checkbox\" class=\"form-check-input\" id=\"outro\" name=\"pilares\" value=\"7\">\n                            <label for=\"outro\">Outro</label>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"row\">\n                    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n                        <input class=\"invisivel\" type=\"radio\" name=\"id\" value={{tweet_id}} checked>\n                        <div class=\"text-center\">\n                            <button class=\"btn btn-primary \" type=\"submit\">Próximo Tweet</button>\n                        </div>\n                    </div>\n                </div>\n            </form>\n        </div>\n    </div>\n</body>\n\n</html>",
+        "output": "str",
+        "x": 660,
+        "y": 560,
+        "wires": [
+            [
+                "ee283de8.d379c"
+            ]
+        ]
+    },
+    {
+        "id": "aa2f90a8.d9f25",
+        "type": "switch",
+        "z": "a89e66c6.93e568",
+        "name": "",
+        "property": "payload.entities.urls[0].url",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "e0b757f1.28266"
+            ],
+            [
+                "1c061e81.dc75c1"
+            ]
+        ]
+    }
+]
